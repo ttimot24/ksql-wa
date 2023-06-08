@@ -1,0 +1,22 @@
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="https://docs.ksqldb.io/en/latest/img/logo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+      ksqlWA
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" [routerLink]="['/dashboard']" aria-current="page" href="#">Dashboard</a>
+        <a class="nav-link" [routerLink]="['/streams']" aria-current="page" href="#">Streams</a>
+        <a class="nav-link" [routerLink]="['/tables']" aria-current="page" href="#">Tables</a>
+        <a class="nav-link" [routerLink]="['/queries']" aria-current="page" href="#">Queries</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,31 @@
+<div class="container mt-5">
+
+    <h1 class="display-5">Tables</h1>
+
+    <div class="card">
+        <div class="card-body">
+    <table class="table table-hover" *ngIf="tables">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Type</th>
+            <th scope="col">Name</th>
+            <th scope="col">Topic</th>
+            <th scope="col">Key Format</th>
+            <th scope="col">Value Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stream of tables;let i=index;">
+            <th scope="row">{{i}}</th>
+            <td><span class="badge text-bg-warning">{{stream.type}}</span></td>
+            <td><a [routerLink]="['/details/table', stream.name]">{{stream.name}}</a></td>
+            <td>{{stream.topic}}</td>
+            <td>{{stream.keyFormat}}</td>
+            <td><span class="badge text-bg-dark">{{stream.valueFormat}}</span></td>
+          </tr>
+        </tbody>
+    </table>
+    </div>
+    </div>
+</div>
