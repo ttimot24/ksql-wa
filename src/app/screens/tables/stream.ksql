@@ -1,0 +1,86 @@
+final GlobalKTable<Key, Value> globalTable = builder.globalTable(DEVICE_STORE_TOPIC, Consumed.with(deviceKeySerde, deviceValueSerde));
+
+
+
+
+CREATE TABLE IF NOT EXISTS cddmp_device_store (`virtual_id` VARCHAR PRIMARY KEY) WITH( 
+    kafka_topic='commsigniadb.device_manager.devices', value_format='AVRO', partitions='1', value_schema_full_name='commsigniadb.device_manager.devices.Value'
+);
+
+SELECT virtual_id, host, location_label, firmware_version, CASE WHEN stack = 0 THEN 'US' WHEN stack = 1 THEN 'EU' END as stack, state, longitude, latitude FROM DEVICE_STORE EMIT CHANGES;
+
+
+CREATE STREAM IF NOT EXISTS cddmp_device_configuration (`virtualId` VARCHAR, `deviceConfigurations` ARRAY<STRUCT<`@type` VARCHAR, `id` VARCHAR, action STRUCT<`operation` VARCHAR, `object` VARCHAR, `order` INTEGER>>>)
+WITH (kafka_topic='commsignia-device-configuration', value_format='JSON', partitions='1');
+
+
+
+
+
+/*public void configureBuilder(StreamsBuilder builder) {
+        final Object schemaRegistryUrl = streamsProperties.get(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG);
+        final Map<String, Object> serdeConfig = Collections
+                .singletonMap(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+
+        final SpecificAvroSerde<Key> deviceKeySerde = new SpecificAvroSerde<>();
+        deviceKeySerde.configure(serdeConfig, true);
+        final SpecificAvroSerde<Value> deviceValueSerde = new SpecificAvroSerde<>();
+        deviceValueSerde.configure(serdeConfig, false);
+        final GlobalKTable<Key, Value> globalTable = builder.globalTable(DEVICE_STORE_TOPIC, Consumed.with(deviceKeySerde, deviceValueSerde));
+
+// device configuration and then merge with above stream
+        final Map<String, KStream<String, DeviceConfigV2>> deviceInfo = builder
+                .stream(DEVICE_CONFIGURATION_TOPIC, deviceConfigurationConsumed)
+                .filter((key, value) -> Objects.nonNull(value.getVirtualId()))
+                .selectKey((key, value) -> value.getVirtualId().toString())
+                .mapValues((key, value) -> DeviceConfigV2.builder()
+                        .device(Device.builder()
+                                .virtualId(value.getVirtualId().toString())
+                                .build())
+                        .configurations(value.getDeviceConfigurations())
+                        .build())
+                .join(
+                        globalTable,
+                        (key, config) -> Key.newBuilder().setVirtualId(config.getDevice().getVirtualId()).build(),
+                        (config, value) -> {
+                            config.setDevice(DeviceBuilder.convert(value));
+                            return config;
+                        })
+                .split(Named.as("split-v2-"))
+                .branch((key, value) -> Optional.of(value)
+                        .map(DeviceConfigV2::getDevice)
+                        .map(Device::getSshUser)
+                        .map(SshUser::getUuid)
+                        .map(UUID::toString)
+                        .isEmpty(), Branched.as("without-ssh-user"))
+                .defaultBranch(Branched.as("with-ssh-user"));
+
+// connect SSH user info
+        final SpecificAvroSerde<commsigniadb.device_manager.ssh_users.Key> sshUserKeySerde = new SpecificAvroSerde<>();
+        sshUserKeySerde.configure(serdeConfig, true);
+        final SpecificAvroSerde<commsigniadb.device_manager.ssh_users.Value> sshUserValueSerde = new SpecificAvroSerde<>();
+        sshUserValueSerde.configure(serdeConfig, false);
+        final GlobalKTable<commsigniadb.device_manager.ssh_users.Key, commsigniadb.device_manager.ssh_users.Value> sshUserGlobalTable =
+                builder.globalTable(SSH_USERS_STORE_TOPIC, Consumed.with(sshUserKeySerde, sshUserValueSerde));
+
+// if there is SSH User then enrich the data
+        deviceInfo
+                .get("split-v2-with-ssh-user")
+                .leftJoin(sshUserGlobalTable,
+                        (key, value) -> Optional.of(value)
+                                .map(DeviceConfigV2::getDevice)
+                                .map(Device::getSshUser)
+                                .map(SshUser::getUuid)
+                                .map(UUID::toString)
+                                .map(uuid -> commsigniadb.device_manager.ssh_users.Key
+                                        .newBuilder()
+                                        .setUuid(uuid)
+                                        .build())
+                                .orElse(null),
+                        (deviceConfig, sshUserValue) -> {
+                            deviceConfig.getDevice().setSshUser(SshUserBuilder.convert(sshUserValue));
+                            return deviceConfig;
+                        })
+                .merge(deviceInfo.get("split-v2-without-ssh-user"))
+                .to(DEPLOYMENT_TOPIC, configurationV2Produced);
+}*/
