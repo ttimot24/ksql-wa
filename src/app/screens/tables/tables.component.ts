@@ -1,8 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
 import { Table } from 'src/app/model/Table';
+import { KsqldbService } from 'src/app/service/ksqldb.service';
  
 
 @Component({
@@ -14,23 +13,15 @@ export class TablesComponent implements OnInit {
 
   tables!: Table[];
 
-  constructor(private http: HttpClient){
+  constructor(private ksqldb: KsqldbService){
 
   }
 
   ngOnInit(): void {
 
-    const headers= new HttpHeaders()
-      .set('content-type', 'application/json')
-      //.set('Access-Control-Allow-Origin', '*')
-      .set('Accept', 'application/vnd.ksql.v1+json');
-
-    this.http.post<any>("http://localhost:4200/ksql", {
-        ksql: "LIST TABLES;",
-        streamsProperties: {}
-    }, { 'headers': headers }).subscribe((data: any) => {
-      console.log(data);
-        this.tables = data[0].tables as Table[];
+    this.ksqldb.listStreams().subscribe((data: Table[]) => {
+        console.log(data);
+        this.tables = data;
     });
 
   }

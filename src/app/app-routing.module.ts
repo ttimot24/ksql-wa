@@ -7,6 +7,7 @@ import { QueriesComponent } from './screens/queries/queries.component';
 import { DetailsComponent } from './screens/details/details.component';
 
 const routes: Routes = [
+  { path: '', component: DashboardComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'streams', component: StreamsComponent },
   { path: 'tables', component: TablesComponent },

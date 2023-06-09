@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-details',
@@ -28,7 +29,7 @@ export class DetailsComponent {
       //.set('Access-Control-Allow-Origin', '*')
       .set('Accept', 'application/vnd.ksql.v1+json');
 
-    this.http.post<any>("http://localhost:4200/ksql", {
+    this.http.post<any>(environment.REST_API_BASE+"/ksql", {
         ksql: "DESCRIBE "+this.dataName?.toUpperCase()+" EXTENDED;",
         streamsProperties: {}
     }, { 'headers': headers }).subscribe((data: any) => {
