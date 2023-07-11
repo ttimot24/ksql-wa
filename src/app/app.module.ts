@@ -10,6 +10,7 @@ import { TablesComponent } from './screens/tables/tables.component';
 import { QueriesComponent } from './screens/queries/queries.component';
 import { EditorComponent } from './screens/editor/editor.component';
 import { DetailsComponent } from './screens/details/details.component';
+import { ConnectorsComponent } from './screens/connectors/connectors.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { DetailsComponent } from './screens/details/details.component';
     TablesComponent,
     QueriesComponent,
     EditorComponent,
-    DetailsComponent
+    DetailsComponent,
+    ConnectorsComponent
   ],
   imports: [
     BrowserModule,

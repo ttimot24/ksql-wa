@@ -1,0 +1,29 @@
+<div class="container mt-5">
+
+    <h1 class="display-5">Connectors</h1>
+
+    <div class="card">
+        <div class="card-body">
+    <table class="table table-hover" *ngIf="connectors">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Type</th>
+            <th scope="col">Name</th>
+            <th scope="col">Class</th>
+            <th scope="col">State</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stream of connectors;let i=index;">
+            <th scope="row">{{i}}</th>
+            <td><span class="badge text-bg-danger">{{stream.type.toUpperCase()}}</span></td>
+            <td><a>{{stream.name}}</a></td>
+            <td>{{stream.className}}</td>
+            <td>{{stream.state}}</td>
+          </tr>
+        </tbody>
+    </table>
+    </div>
+    </div>
+</div>

@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, EMPTY, tap, of, catchError, map } from 'rxjs';
 import { Stream } from "../model/Stream";
+import { Table } from "../model/Table";
+import { Connector } from "../model/Connector";
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -33,7 +35,7 @@ export class KsqldbService {
   }
 
 
-  public listTables(): Observable<Stream[]>{
+  public listTables(): Observable<Table[]>{
     const headers= new HttpHeaders()
     .set('content-type', 'application/json')
     //.set('Access-Control-Allow-Origin', '*')
@@ -44,7 +46,26 @@ export class KsqldbService {
         streamsProperties: {}
     }, { 'headers': headers }).pipe(
         map((response: any) => {
-            return response[0].tables as Stream[];
+            return response[0].tables as Table[];
+          }),
+          catchError((error) => {
+            return of(error.error);
+      })
+    );
+  }
+
+  public listConnectors(): Observable<Connector[]>{
+    const headers= new HttpHeaders()
+    .set('content-type', 'application/json')
+    //.set('Access-Control-Allow-Origin', '*')
+    .set('Accept', 'application/vnd.ksql.v1+json');
+
+    return this.http.post<any>(environment.REST_API_BASE+"/ksql", {
+        ksql: "LIST CONNECTORS;",
+        streamsProperties: {}
+    }, { 'headers': headers }).pipe(
+        map((response: any) => {
+            return response[0].connectors as Connector[];
           }),
           catchError((error) => {
             return of(error.error);

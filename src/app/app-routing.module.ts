@@ -5,6 +5,7 @@ import { StreamsComponent } from './screens/streams/streams.component';
 import { TablesComponent } from './screens/tables/tables.component';
 import { QueriesComponent } from './screens/queries/queries.component';
 import { DetailsComponent } from './screens/details/details.component';
+import { ConnectorsComponent } from './screens/connectors/connectors.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'tables', component: TablesComponent },
   { path: 'details/:type/:name', component: DetailsComponent },
   { path: 'queries', component: QueriesComponent },
+  { path: 'connectors', component: ConnectorsComponent },
 ];
 
 @NgModule({
